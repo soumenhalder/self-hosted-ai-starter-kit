@@ -10,6 +10,8 @@
 
 ---
 
+**Some docker use volume name convention with project name in prefix, in that case update the step 1, 3, 4**
+
 ## 2️⃣ Steps to transfer volumes to a new system
 
 
@@ -43,3 +45,4 @@ docker run --rm -v qdrant_storage:/volume -v $(pwd):/backup alpine sh -c "cd /vo
 ```
 
 5. Start your stack on the new system with `docker compose up -d`.  
+
