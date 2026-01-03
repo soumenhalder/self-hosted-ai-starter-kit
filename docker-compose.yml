@@ -104,6 +104,8 @@ services:
       - ./shared:/data/shared
       - ./localhost.key:/home/node/certs/localhost.key
       - ./localhost.crt:/home/node/certs/localhost.crt
+    environment:
+      - NODE_OPTIONS=--max-old-space-size=8192
     env_file:
       - path: .env
         required: true
