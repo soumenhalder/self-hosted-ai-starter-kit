@@ -5,11 +5,11 @@ volumes:
   qdrant_storage:
 
 networks:
-  demo:
+  a2a:
 
 x-n8n: &service-n8n
-  image: n8nio/n8n:latest
-  networks: ['demo']
+  image: n8nio/n8n:2.2.0
+  networks: ['a2a']
   environment:
     - DB_TYPE=postgresdb
     - DB_POSTGRESDB_HOST=postgres
@@ -37,7 +37,7 @@ x-n8n: &service-n8n
 x-ollama: &service-ollama
   image: ollama/ollama:latest
   container_name: ollama
-  networks: ['demo']
+  networks: ['a2a']
   restart: unless-stopped
   ports:
     - "127.0.0.1:11434:11434"
@@ -46,7 +46,7 @@ x-ollama: &service-ollama
 
 x-init-ollama: &init-ollama
   image: ollama/ollama:latest
-  networks: ['demo']
+  networks: ['a2a']
   container_name: ollama-pull-llama
   volumes:
     - ollama_storage:/root/.ollama
@@ -61,7 +61,7 @@ services:
   postgres:
     image: postgres:16-alpine
     hostname: postgres
-    networks: ['demo']
+    networks: ['a2a']
     restart: unless-stopped
     ports:
       - "127.0.0.1:5432:5432"
@@ -84,9 +84,9 @@ services:
     entrypoint: /bin/sh
     command:
       - "-c"
-      - "n8n import:credentials --separate --input=/demo-data/credentials && n8n import:workflow --separate --input=/demo-data/workflows"
+      - "n8n import:credentials --separate --input=/backup-data/credentials && n8n import:workflow --separate --input=/backup-data/workflows"
     volumes:
-      - ./n8n/demo-data:/demo-data
+      - ./n8n/backup-data:/backup-data
     depends_on:
       postgres:
         condition: service_healthy
@@ -100,7 +100,7 @@ services:
       - "127.0.0.1:5678:5678"
     volumes:
       - n8n_storage:/home/node/.n8n
-      - ./n8n/demo-data:/demo-data
+      - ./n8n/backup-data:/backup-data
       - ./shared:/data/shared
       - ./localhost.key:/home/node/certs/localhost.key
       - ./localhost.crt:/home/node/certs/localhost.crt
@@ -119,7 +119,7 @@ services:
     image: qdrant/qdrant
     hostname: qdrant
     container_name: qdrant
-    networks: ['demo']
+    networks: ['a2a']
     restart: unless-stopped
     ports:
       - "127.0.0.1:6333:6333"
